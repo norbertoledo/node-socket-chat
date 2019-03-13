@@ -24,7 +24,11 @@ socket.on('connect', function() {
     socket.emit('entrarChat', usuario, function( res ){
 
         // En res recibo el callback del servidor
-        console.log('Usuarios conectados:',res);
+        //console.log('Usuarios conectados:',res);
+
+        // res = array de usuarios [{usuario}, {usuario}, {usuario}];
+        renderizarUsuarios(res);
+
     });
 
 });
@@ -42,7 +46,13 @@ socket.on('disconnect', function() {
 
 });
 
+// Escuchar cuando un usuario entra o sale del chat
+// Se dispara cuando hay cambios en el array de personas
+socket.on('listaPersonas', function(personas) {
 
+    //console.log(personas);
+    renderizarUsuarios(personas);
+});
 
 
 // Enviar información al servidor
@@ -54,17 +64,14 @@ socket.emit('crearMensaje', {
 });
 */
 
+
 // Escuchar información del servidor
+// Cuando se recibe un nuevo mensaje
 socket.on('crearMensaje', function(mensaje) {
 
-    console.log('Servidor:', mensaje);
-
-});
-
-// Escuchar cuando un usuario entra o sale del chat
-socket.on('listaPersonas', function(personas) {
-
-    console.log(personas);
+    //console.log('Servidor:', mensaje);
+    renderizarMensajes( mensaje, false);
+    scrollBottom();
 
 });
 

@@ -34,6 +34,9 @@ io.on('connection', (client) => {
         // Emito a todos los usuarios DE LA MISMA SALA cada vez que un usuario entra al chat
         client.broadcast.to(usuarioSala).emit('listaPersonas', usuarios.getPersonasPorSala(usuarioSala));
 
+        // Notifico a todos los usuarios quien ingresó el chat
+        client.broadcast.to(usuarioSala).emit('crearMensaje', crearMensaje('Administrador', `${usuarioNombre} ingresó al chat...`));
+        
         // Veo cuantos usuarios conectados hay en mi sala a la hora de conectarme
         callback(usuarios.getPersonasPorSala(usuarioSala));
 
@@ -54,7 +57,7 @@ io.on('connection', (client) => {
 
     });
 
-    client.on('crearMensaje', (data)=>{
+    client.on('crearMensaje', (data, callback)=>{
 
         let persona = usuarios.getPersona(client.id);
 
@@ -62,6 +65,8 @@ io.on('connection', (client) => {
 
         client.broadcast.to(persona.sala).emit('crearMensaje', mensaje);
 
+        // Notifico al jquery que el mensaje se envió y borre la caja de texto.
+        callback( mensaje );
 
     })
 
